@@ -1,4 +1,9 @@
-export const users = [
+export interface IUser {
+  name: string
+  picture: string
+}
+
+export const users: IUser[] = [
   {
     name: 'John Doe',
     picture: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',

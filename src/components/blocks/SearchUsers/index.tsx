@@ -14,25 +14,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useEffect, useState } from "react"
-import { users } from "@/api/mock/users"
+import { useState } from "react"
 import UserCard from "../UserCard"
+import { IUser } from "@/api/mock/users"
 
-export function UsersListCombobox({onUpdateUsers}: {onUpdateUsers: (users: string[]) => void}) {
+type ISearchUsersProps = {
+  onSelectUser: (user: IUser) => void
+  users: Array<IUser & {isChecked: boolean}>
+}
+
+export function SearchUsers({users, onSelectUser}: ISearchUsersProps) {
   const [open, setOpen] = useState<boolean>(false)
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
-
-  const selectUser = (user: string) => {
-    if (selectedUsers.includes(user)) {
-      setSelectedUsers(selectedUsers.filter((u) => u !== user))
-    } else {
-      setSelectedUsers([...selectedUsers, user])
-    }
-  }
-
-  useEffect(() => {
-    onUpdateUsers(selectedUsers)
-  }, [selectedUsers])
+  // const [selectedUsers, setSelectedUsers] = useState<string[]>([])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,12 +50,12 @@ export function UsersListCombobox({onUpdateUsers}: {onUpdateUsers: (users: strin
                 <CommandItem
                   key={idx}
                   value={user.name}
-                  onSelect={(currentValue) => {
-                    selectUser(currentValue)
+                  onSelect={() => {
+                    onSelectUser(user)
                     // setOpen(false)
                   }}
                 >
-                  <div className="flex w-full items-center justify-between">
+                  <div className="flex w-full items-center justify-between cursor-pointer">
                     <UserCard
                       name={user.name}
                       image={user.picture}
@@ -70,7 +63,7 @@ export function UsersListCombobox({onUpdateUsers}: {onUpdateUsers: (users: strin
                     <Check
                       className={cn(
                         "ml-auto",
-                        selectedUsers.includes(user.name)
+                        user.isChecked
                           ? "opacity-100"
                           : "opacity-0"
                       )}

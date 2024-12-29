@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button"
-import { Plus, X, Warning } from "@phosphor-icons/react"
+import { Plus, X } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { IUser, users } from "@/api/mock/users"
 
 import {
   Dialog,
@@ -16,30 +17,77 @@ import {
 } from "@/components/ui/dialog"
 import { useEffect, useState } from "react"
 import { useCreateChat } from "@/api/chats/mutations"
-import { UsersListCombobox } from "../SearchUser"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { SearchUsers } from "../SearchUsers"
+
+type IUserlist = IUser & {isChecked: boolean}
 
 export default function AddGroupModal({onCreateChat}: {onCreateChat: () => void}) {
-  const [participants, setParticipants] = useState<string[]>(["Example"]);
+  const [userList, setUserList] = useState<IUserlist[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const { toast } = useToast()
 
   const {mutateAsync: createChatMutation, isSuccess} = useCreateChat();
 
-  const handleSubmit = async () => {
-    if (!participants.length) {
-      <Alert variant="destructive" className="gap-x-2 items-center">
-        <Warning size={24} />
-        <AlertTitle>Error:</AlertTitle>
-        <AlertDescription>
-          Choose at least one user.
-        </AlertDescription>
-      </Alert>
-      return;
-    }
+  useEffect(() => {
+    const usersList = users.map(user => {
+      return {
+        ...user,
+        isChecked: false
+      }
+    })
 
+    setUserList(usersList)
+  }, [])
+
+  useEffect(() => {
+    const selected = userList.filter(user => user.isChecked).map(user => user.name)
+    setSelectedUsers(selected)
+  }, [userList])
+
+  const cleanSelectedUsers = () => {
+    setSelectedUsers([]);
+    setUserList(prev => {
+      return prev.map(user => {
+        return {
+          ...user,
+          isChecked: false
+        }
+      })
+    })
+  }
+
+  const removeUserSelected = (user: string) => {
+    setUserList(prev => {
+      return prev.map(item => {
+        if (item.name === user) {
+          return {
+            ...item,
+            isChecked: false
+          }
+        }
+        return item
+      })
+    })
+  }
+
+  const setUserSelected = (user: string) => {
+    setUserList(prev => {
+      return prev.map(item => {
+        if (item.name === user) {
+          return {
+            ...item,
+            isChecked: !item.isChecked
+          }
+        }
+        return item
+      })
+    })
+  }
+
+  const handleSubmit = async () => {
     try {
-      await createChatMutation({participants});
-      setParticipants([]);
+      await createChatMutation({participants: selectedUsers});
+      cleanSelectedUsers();
       toast({
         title: "Chat created",
         description: "Now you can chat with your friends",
@@ -74,12 +122,14 @@ export default function AddGroupModal({onCreateChat}: {onCreateChat: () => void}
           </DialogDescription>
         </DialogHeader>
         <div className="gap-4 py-4">
-          <UsersListCombobox onUpdateUsers={setParticipants} />
+          <SearchUsers users={userList} onSelectUser={(user) => setUserSelected(user.name)} />
           <div className="flex flex-wrap items-center gap-2 mt-4">
-            {participants.map((participant, idx) => (
+            {selectedUsers.map((participant, idx) => (
               <Badge key={idx} className="p-2 flex gap-x-2">
                 {participant}
-                <X size={12} />
+                <button onClick={() => removeUserSelected(participant)}>
+                  <X size={12} />
+                </button>
               </Badge>
             ))}
           </div>
