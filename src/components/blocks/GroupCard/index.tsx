@@ -4,11 +4,12 @@ interface IGroupCardProps {
   chat_id: string
   participants: string[]
   isLoading?: boolean
+  onClick?: () => void
 }
 
-export default function GroupCard({chat_id, participants, isLoading}: IGroupCardProps) {
+export default function GroupCard({chat_id, participants, isLoading, onClick}: IGroupCardProps) {
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4 cursor-pointer" onClick={onClick}>
       {isLoading ? (
         <div className="min-w-0 space-y-2 flex-1">
           <Skeleton className="h-4 w-[230px]" />

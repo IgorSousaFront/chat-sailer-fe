@@ -5,20 +5,28 @@ export interface IChat {
   participants: string[];
 }
 
+export interface IMessage {
+  id?: string,
+  user_id: string,
+  type: "text" | "image" | "audio",
+  content: string,
+  timestamp?: string | Date
+}
+
 export class ChatService {
   async findAll() {
     return api.get<IChat[]>('/chats');
   }
   
   async findById(id: string) {
-    return api.get<IChat[]>(`/chats/${id}/messages`);
+    return api.get<IMessage[]>(`/chats/${id}/messages`);
   }
 
   async createChat(data: IChat) {
     return api.post<IChat>('/chats', data);
   }
 
-  async sendMessage(data: IChat) {
-    return api.post<IChat>('/chats', data);
+  async sendMessage(chat_id:string, data: IMessage) {
+    return api.post<IChat>(`/chats/${chat_id}/messages`, data);
   }
 }

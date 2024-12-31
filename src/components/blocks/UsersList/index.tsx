@@ -1,6 +1,7 @@
 import { users } from "@/api/mock/users";
 import UserCard from "../UserCard";
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator";
 
 
 export default function UsersList() {
@@ -14,7 +15,7 @@ export default function UsersList() {
               image={user.picture}
             />
             {idx !== users.length - 1 && (
-              <div className="my-4 border-t border-muted" />
+              <Separator className="my-3"/>
             )}
           </div>
         ))}

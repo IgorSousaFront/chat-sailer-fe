@@ -25,7 +25,6 @@ type ISearchUsersProps = {
 
 export function SearchUsers({users, onSelectUser}: ISearchUsersProps) {
   const [open, setOpen] = useState<boolean>(false)
-  // const [selectedUsers, setSelectedUsers] = useState<string[]>([])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -52,7 +51,7 @@ export function SearchUsers({users, onSelectUser}: ISearchUsersProps) {
                   value={user.name}
                   onSelect={() => {
                     onSelectUser(user)
-                    // setOpen(false)
+                    setOpen(false)
                   }}
                 >
                   <div className="flex w-full items-center justify-between cursor-pointer">

@@ -3,16 +3,18 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Warning } from "@phosphor-icons/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IChat } from "@/api/chats";
+import { Separator } from "@/components/ui/separator";
 
 type IGroupListProps = {
   chats: IChat[] | undefined
 } & {
   error: any
   isLoading: boolean
+  onSelectChat: (id: string) => void
 }
 
 
-export default function GroupList({chats, error, isLoading}: IGroupListProps) {
+export default function GroupList({chats, error, isLoading, onSelectChat}: IGroupListProps) {
 
   if (error) {
     return(
@@ -36,7 +38,7 @@ export default function GroupList({chats, error, isLoading}: IGroupListProps) {
               participants={[""]}
               isLoading={isLoading}
             />
-            <div className="mt-4 border-t" />
+            <Separator className="my-3"/>
           </div>
         ))}
       </div>
@@ -51,11 +53,12 @@ export default function GroupList({chats, error, isLoading}: IGroupListProps) {
             return (
               <div key={group.chat_id}>
                 <GroupCard
+                  onClick={() => onSelectChat(group.chat_id as string)}
                   chat_id={group.chat_id}
                   participants={group.participants}
                 />
                 {idx !== chats.length - 1 && (
-                  <div className="my-4 border-t" />
+                  <Separator className="my-3"/>
                 )}
               </div>
             )

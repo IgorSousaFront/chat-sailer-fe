@@ -5,9 +5,16 @@ import GroupList from "../GroupList"
 import AddGroupModal from "../AddGroupModal"
 import UsersList from "../UsersList"
 import { useChats } from "@/api/chats/queries"
+import { Separator } from "@/components/ui/separator"
+import EmptyBlock from "../EmptyBlock"
 
-export default function Chats() {
+export default function Chats({onSelectChat}: {onSelectChat: (id: string) => void}) {
   const { data: chats, isLoading, error, refetch } = useChats();
+
+  const handleSelectChat = (id: string) => {
+    refetch();
+    onSelectChat(id);
+  }
 
   return (
     <Card className="h-full flex flex-col relative">
@@ -16,8 +23,9 @@ export default function Chats() {
           <Chat size={24} weight="bold" /> Your chats
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="groups" className="w-full">
+      <Separator />
+      <CardContent className="py-6 h-full">
+        <Tabs defaultValue="groups" className="w-full h-full flex flex-col">
           <TabsList>
             <TabsTrigger value="groups">
               <UsersThree size={20} weight="bold" />
@@ -28,22 +36,17 @@ export default function Chats() {
               Users
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="groups" className="pt-4">
+          <TabsContent value="groups" className="pt-4 h-full">
             {
               chats?.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-y-4 h-[400px]">
-                  <Cactus size={60} className="text-muted-foreground" weight="light" />
-                  <p className="text-sm text-muted-foreground">
-                    You don&apos;t have any group yet.
-                  </p>
-                </div>
+                <EmptyBlock text="You don't have any group yet." icon={Cactus} />
               ) : (
-                <GroupList chats={chats} error={error} isLoading={isLoading} />
+                <GroupList chats={chats} error={error} isLoading={isLoading} onSelectChat={onSelectChat} />
               )
             }
-            <AddGroupModal onCreateChat={refetch} />
+            <AddGroupModal onCreateChat={handleSelectChat} />
           </TabsContent>
-          <TabsContent value="users" className="pt-4">
+          <TabsContent value="users" className="pt-4 h-full">
             <UsersList />
           </TabsContent>
         </Tabs>
