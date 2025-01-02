@@ -14,7 +14,7 @@ function App() {
   return (
     <Layout>
       <ResizablePanelGroup direction="horizontal" className="p-6 gap-3">
-        <ResizablePanel defaultSize={30} minSize={20} maxSize={50} >
+        <ResizablePanel defaultSize={30} minSize={24} maxSize={50} >
           <Chats onSelectChat={setActiveMessageId} />
         </ResizablePanel>
         <ResizableHandle withHandle />

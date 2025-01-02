@@ -15,12 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { useEffect, useState } from "react"
 import { useCreateChat } from "@/api/chats/mutations"
 import { SearchUsers } from "../SearchUsers"
@@ -131,33 +125,17 @@ export default function AddGroupModal({onCreateChat}: {onCreateChat: (chat_id: s
 
   return (
     <div className="absolute bottom-4 right-4 flex gap-2">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button size="icon" onClick={handleNewChatBot}>
-              <Robot size={24} weight="bold" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Talk to a bot</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Button onClick={handleNewChatBot}>
+        Talk to a bot
+        <Robot size={24} weight="bold" />
+      </Button>
       <Dialog>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DialogTrigger asChild>
-                <Button size="icon">
-                  <Plus size={24} weight="bold" />
-                </Button>
-              </DialogTrigger>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Create a group</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <DialogTrigger asChild>
+          <Button>
+            Create a group
+            <Plus size={24} weight="bold" />
+          </Button>
+        </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Create a group</DialogTitle>
@@ -180,6 +158,9 @@ export default function AddGroupModal({onCreateChat}: {onCreateChat: (chat_id: s
             </div>
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
             <DialogClose asChild>
               <Button type="submit" onClick={handleNewGroup}>Create Group</Button>
             </DialogClose>

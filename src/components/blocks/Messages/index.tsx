@@ -2,7 +2,7 @@ import { useChatMessages } from "@/api/chats/queries"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { ChatSlash, Image, Microphone, MusicNotesSimple, PaperPlaneRight, UsersThree } from "@phosphor-icons/react"
+import { ChatSlash, Image, Microphone, MusicNotesSimple, PaperPlaneRight, Spinner, UsersThree } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
 import { MessageWidget } from "./MessageTypes"
 import EmptyBlock from "../EmptyBlock"
@@ -17,21 +17,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useToast } from "@/hooks/use-toast"
 import { audios } from "@/api/mock/audios"
+import { Skeleton } from "@/components/ui/skeleton"
 
 type IMessagesProps = {
   chat_id: string
   participants: string[]
 }
+
+const presenceUpdated: Record<string, string> = {
+  "online": "Entered the chat",
+  "offline": "Leaved the chat",
+  "typing": "Is Typing"
+}
+
 export default function Messages({chat_id, participants}: IMessagesProps) {
   const [message, setMessage] = useState("");
   const [messageImage, setMessageImage] = useState("");
   const [messageHistory, setMessageHistory] = useState<IMessage[]>([]);
-  const { data: messages } = useChatMessages(chat_id);
-  const [isTyping, setIsTyping] = useState<Boolean>(false);
+  const { data: messages, refetch, isLoading } = useChatMessages(chat_id);
+  const [userPresence, setUserPresence] = useState<string>("");
   const {mutateAsync: sendMessage} = useSendMessage(chat_id);
-  const { toast } = useToast()
 
   const { lastJsonMessage } = useWebSocket<any>(`/ws/${chat_id}`, {
     onOpen: () => console.log("WebSocket connection established"),
@@ -49,13 +55,11 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
       }
       
       if(lastJsonMessage && lastJsonMessage.event === "presence_updated") {
-        if(lastMessage.status === "typing") {
-          setIsTyping(true);
-        } else {
-          setIsTyping(false);
-          toast({
-            title: `The user: ${lastJsonMessage.data.user_id} ${lastMessage.status === "online" ? "is online" : "leaved the chat"}.`,
-          })
+        setUserPresence(`The user ${lastMessage.user_id} ${presenceUpdated[lastMessage.status]}`);
+        if(lastMessage.status === "offline"){
+          setTimeout(() => {
+            setUserPresence("");
+          }, 3000);
         }
       }
     }
@@ -67,6 +71,10 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
 
   useEffect(() => {
     handleUpdateChat();
+  }, [lastJsonMessage])
+
+  useEffect(() => {
+    refetch();
   }, [lastJsonMessage])
 
   const cleanFields = (type: "text" | "image") => {
@@ -92,7 +100,26 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
     }).then(() => {
       cleanFields(type);
     });
+  }
 
+  if(isLoading) {
+    return (
+      <Card className="h-full flex flex-col relative">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <Skeleton className="size-6" />
+            <Skeleton className="w-full h-4" />
+          </CardTitle>
+          <CardDescription>
+            <Skeleton className="w-full h-4" />
+          </CardDescription>
+        </CardHeader>
+        <Separator />
+        <CardContent className="h-full overflow-scroll flex flex-col-reverse relative">
+          <EmptyBlock text="Loading" icon={Spinner} />
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -112,8 +139,8 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
       </CardHeader>
       <Separator />
       <CardContent className="h-full overflow-scroll flex flex-col-reverse relative">
-        {isTyping && (
-          <p className="absolute bottom-0 left-0 w-full bg-muted p-2 text-sm text-muted-foreground">Bot user is typing...</p>
+        {userPresence && (
+          <p className="absolute bottom-0 left-0 w-full bg-muted p-2 text-sm text-muted-foreground">{userPresence}</p>
         )}
         {messageHistory?.length === 0 ? (
           <EmptyBlock text="No messages yet. Start a conversation." icon={ChatSlash} />

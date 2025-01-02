@@ -12,8 +12,8 @@ export default function Chats({onSelectChat}: {onSelectChat: (id: string) => voi
   const { data: chats, isLoading, error, refetch } = useChats();
 
   const handleSelectChat = (id: string) => {
-    refetch();
     onSelectChat(id);
+    refetch();
   }
 
   return (
