@@ -1,5 +1,7 @@
 # frontend-technical-challenge
 
+![Cover image for test](./cover.png)
+
 This is my code to **Sailer AI** frontend challenge
 
 Build a chat interface that can send and receive messages using the REST API and optionally integrate with WebSockets for real-time updates.
