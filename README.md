@@ -1,50 +1,62 @@
-# React + TypeScript + Vite
+# frontend-technical-challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is my code to **Sailer AI** frontend challenge
 
-Currently, two official plugins are available:
+Build a chat interface that can send and receive messages using the REST API and optionally integrate with WebSockets for real-time updates.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The main features to Implement:
+- Ability to create chats and display messages.
+- Sending text, images, and audio messages.
+- Display user presence (online, offline, typing).
 
-## Expanding the ESLint configuration
+## Summary
+- Installation
+- Run
+- Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Installation
+Clone this repository in your local machine using the command
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```shell
+git clone https://github.com/IgorSousaFront/chat-challenge-fe.git
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Install the dependencies
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```shell
+npm install
 ```
+or
+```shell
+yarn
+```
+
+### Run
+To run You will need to run the Docker container provided first [here](https://github.com/SailerAI/frontend-technical-challenge), follow the steps to run the backend;
+
+after run the docker, run the frontend
+
+```shell
+npm run dev
+```
+or
+```shell
+yarn dev
+```
+open [localhost:5173](http://localhost:5173/) in your preferred browser
+
+### Stack
+The choosen technologies to complete this challenge
+
+| Tool               | Name           | Link for documentation            |
+|--------------------|----------------|-----------------------------------|
+| Language           | Typescript     | https://www.typescriptlang.org/   |
+| Framework          | React.js       | https://react.dev/                |
+| Build Tool         | Vite.js        | https://vite.dev/                 |
+| Component library  | Shadcn/ui      | https://ui.shadcn.com/            |
+| Icons lib          | Phosphor icons | https://phosphoricons.com/        |
+| HTTP Client        | Axios          | https://axios-http.com/           |
+| CSS Framework      | Tailwind CSS   | https://tailwindcss.com/          |
+| Manage Async State | React Query    | https://tanstack.com/query/latest |
+
+
