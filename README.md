@@ -18,7 +18,7 @@ The main features to Implement:
 Clone this repository in your local machine using the command
 
 ```shell
-git clone https://github.com/IgorSousaFront/chat-challenge-fe.git
+git clone https://github.com/IgorSousaFront/chat-sailer-fe
 ```
 
 Install the dependencies
