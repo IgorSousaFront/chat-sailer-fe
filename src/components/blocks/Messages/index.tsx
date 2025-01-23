@@ -35,6 +35,7 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
   const [message, setMessage] = useState("");
   const [messageImage, setMessageImage] = useState("");
   const [messageHistory, setMessageHistory] = useState<IMessage[]>([]);
+  const [fixedMessageId, setFixedMessageId] = useState<string | null>(null);
   const { data: messages, refetch, isLoading } = useChatMessages(chat_id);
   const [userPresence, setUserPresence] = useState<string>("");
   const {mutateAsync: sendMessage} = useSendMessage(chat_id);
@@ -149,9 +150,12 @@ export default function Messages({chat_id, participants}: IMessagesProps) {
             {messageHistory?.map((message, idx) => (
               <MessageWidget
                 key={idx}
+                id={message.id}
                 content={message.content}
                 type={message.type}
                 position={message.user_id === "You" ? "right" : "left"}
+                isFixed={fixedMessageId === message.id}
+                onPinMessage={id => setFixedMessageId(id)}
               />
             ))}
           </div>

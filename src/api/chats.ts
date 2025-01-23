@@ -6,12 +6,15 @@ export interface IChat {
 }
 
 export interface IMessage {
-  id?: string,
+  id: string,
   user_id: string,
   type: "text" | "image" | "audio",
   content: string,
   timestamp?: string | Date
+  isFixed?: boolean
 }
+
+export type IMessageCreate = Omit<IMessage, "id">
 
 export class ChatService {
   async findAll() {
@@ -26,7 +29,7 @@ export class ChatService {
     return api.post<IChat>('/chats', data);
   }
 
-  async sendMessage(chat_id:string, data: IMessage) {
+  async sendMessage(chat_id:string, data: IMessageCreate) {
     return api.post<IChat>(`/chats/${chat_id}/messages`, data);
   }
 }
